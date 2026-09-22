@@ -518,7 +518,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 // DATA
 var SK='bolso_v4';
 function loadDB(){try{var d=JSON.parse(localStorage.getItem(SK));if(d&&d.incomes&&d.expenses)return d;}catch(e){}return{incomes:[],expenses:[],budgets:{},goals:[]};}
-function saveDB(){localStorage.setItem(SK,JSON.stringify(db));}
+function saveDB(){try{localStorage.setItem(SK,JSON.stringify(db));}catch(err){showToast('❌ Não foi possível salvar os dados.');console.error(err);}}
 var db=loadDB();
 if(!db.budgets)db.budgets={};
 if(!db.goals)db.goals=[];
@@ -635,7 +635,7 @@ function toggleRecurUntil(){
 
 // DEFAULT DATES
 function setDefaultDates(){
-  var iso=new Date().toISOString().split('T')[0];
+  var d=new Date();var iso=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   document.getElementById('inc-date').value=iso;
   document.getElementById('exp-date').value=iso;
 }
@@ -740,8 +740,8 @@ function saveExpense(){
     } else {
       var dp=date.split('-').map(Number);
       for(var i=0;i<inst;i++){
-        var nd=new Date(dp[0],dp[1]-1+i,dp[2]);
-        db.expenses.push({id:baseId+i,groupId:baseId,desc:desc,val:val/inst,date:nd.toISOString().split('T')[0],cat:selectedCat,payment:pay,installments:inst,part:i+1});
+        var nd=new Date(dp[0],dp[1]-1+i,1);var lastDay=new Date(nd.getFullYear(),nd.getMonth()+1,0).getDate();nd.setDate(Math.min(dp[2],lastDay));var iso=nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');
+        db.expenses.push({id:baseId+i,groupId:baseId,desc:desc,val:val/inst,date:iso,cat:selectedCat,payment:pay,installments:inst,part:i+1});
       }
     }
   }
@@ -1158,7 +1158,7 @@ function importJSON(event){
   reader.onload=function(e){
     try{
       var data=JSON.parse(e.target.result);
-      if(data.incomes&&data.expenses){
+      if(Array.isArray(data.incomes)&&Array.isArray(data.expenses)){
         db=data;if(!db.budgets)db.budgets={};if(!db.goals)db.goals=[];
         saveDB();render();showToast('✅ Backup restaurado!');
       } else showToast('❌ Arquivo inválido');
@@ -1183,6 +1183,8 @@ function showToast(msg){
 }
 
 render();
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(err){console.warn('PWA indisponível:',err);});});}
 </script>
 </body>
 </html>
