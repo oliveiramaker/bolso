@@ -743,9 +743,14 @@ function saveExpense(){
       db.expenses.push({id:baseId,desc:desc,val:val,date:date,cat:selectedCat,payment:pay,installments:1,part:1});
     } else {
       var dp=date.split('-').map(Number);
+      // Divide em centavos para que a soma das parcelas seja exatamente igual ao valor informado.
+      var totalCents=Math.round(val*100);
+      var baseCents=Math.floor(totalCents/inst);
+      var remainder=totalCents%inst;
       for(var i=0;i<inst;i++){
         var nd=new Date(dp[0],dp[1]-1+i,1);var lastDay=new Date(nd.getFullYear(),nd.getMonth()+1,0).getDate();nd.setDate(Math.min(dp[2],lastDay));var iso=nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');
-        db.expenses.push({id:baseId+i,groupId:baseId,desc:desc,val:val/inst,date:iso,cat:selectedCat,payment:pay,installments:inst,part:i+1});
+        var partCents=baseCents+(i<remainder?1:0);
+        db.expenses.push({id:baseId+i,groupId:baseId,desc:desc,val:partCents/100,date:iso,cat:selectedCat,payment:pay,installments:inst,part:i+1});
       }
     }
   }
