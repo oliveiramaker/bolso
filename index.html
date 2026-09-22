@@ -672,7 +672,7 @@ function saveIncome(){
   var type=document.getElementById('inc-type').value;
   var recur=document.getElementById('inc-recur').value;
   var until=document.getElementById('inc-until').value;
-  if(!desc||!val||!date){showToast('Preencha todos os campos!');return;}
+  if(!desc||!Number.isFinite(val)||val<=0||!date){showToast('Preencha os campos com valores válidos!');return;}
   if(editId){
     var idx=db.incomes.findIndex(function(x){return x.id==editId;});
     if(idx>-1)db.incomes[idx]=Object.assign({},db.incomes[idx],{desc:desc,val:val,date:date,type:type});
@@ -766,7 +766,7 @@ function saveExpense(){
 function saveBudget(){
   var cat=document.getElementById('bud-cat').value;
   var limit=parseFloat(document.getElementById('bud-limit').value);
-  if(!cat||!limit){showToast('Preencha todos os campos!');return;}
+  if(!cat||!Number.isFinite(limit)||limit<=0){showToast('Informe um limite válido maior que zero!');return;}
   db.budgets[cat]=limit;saveDB();closeModal('m-add-budget');
   document.getElementById('bud-limit').value='';
   showToast('✅ Orçamento salvo!');render();
@@ -780,7 +780,8 @@ function saveGoal(){
   var target=parseFloat(document.getElementById('goal-target').value);
   var saved=parseFloat(document.getElementById('goal-saved').value)||0;
   var deadline=document.getElementById('goal-deadline').value;
-  if(!name||!target){showToast('Preencha nome e valor!');return;}
+  if(!name||!Number.isFinite(target)||target<=0||!Number.isFinite(saved)||saved<0){showToast('Informe valores válidos para a meta!');return;}
+  saved=Math.min(saved,target);
   db.goals.push({id:Date.now(),name:name,emoji:emoji,target:target,saved:saved,deadline:deadline});
   saveDB();closeModal('m-add-goal');
   document.getElementById('goal-name').value='';document.getElementById('goal-emoji').value='';
@@ -796,7 +797,7 @@ function openContribute(id){
 function contributeGoal(){
   var id=parseInt(document.getElementById('contrib-id').value);
   var v=parseFloat(document.getElementById('contrib-val').value);
-  if(!v){showToast('Digite um valor!');return;}
+  if(!Number.isFinite(v)||v<=0){showToast('Digite um valor válido maior que zero!');return;}
   var g=db.goals.find(function(x){return x.id===id;});
   if(g)g.saved=Math.min(g.target,g.saved+v);
   saveDB();closeModal('m-contribute');showToast('✅ Valor adicionado!');renderGoals();
