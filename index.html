@@ -1135,11 +1135,14 @@ function renderReports(){
   var igroups={};
   db.expenses.forEach(function(e){
     if(e.groupId&&e.installments>1){
-      if(!igroups[e.groupId])igroups[e.groupId]={desc:e.desc,cat:e.cat,payment:e.payment,paid:0,remaining:0,valPer:e.val,installments:e.installments};
-      var eDate=new Date(e.date);
-      var now=new Date(y,m,1);
-      if(eDate<now)igroups[e.groupId].paid++;
-      else igroups[e.groupId].remaining++;
+      if(!igroups[e.groupId])igroups[e.groupId]={desc:e.desc,cat:e.cat,payment:e.payment,paid:0,remaining:0,remainingTotal:0,installments:e.installments};
+      // Compara o mês diretamente para evitar deslocamento de fuso causado por new Date('YYYY-MM-DD').
+      var currentMonth=mk(y,m);
+      if(e.date&&e.date.slice(0,7)<currentMonth)igroups[e.groupId].paid++;
+      else{
+        igroups[e.groupId].remaining++;
+        igroups[e.groupId].remainingTotal+=Number(e.val)||0;
+      }
     }
   });
   var gList=Object.values(igroups).filter(function(g){return g.remaining>0;}).sort(function(a,b){return b.remaining-a.remaining;});
@@ -1151,7 +1154,7 @@ function renderReports(){
       '<div style="display:flex;justify-content:space-between;align-items:center;">'+
       '<div style="font-weight:500;font-size:13px;">'+cat.e+' '+g.desc+'</div>'+
       '<span class="tag">'+g.paid+'/'+g.installments+'</span></div>'+
-      '<div style="font-size:11px;color:var(--muted);margin-top:4px;">'+g.remaining+' parcela(s) restante(s) · '+fmtCur(g.valPer)+'/mês · Total restante: '+fmtCur(g.valPer*g.remaining)+'</div>'+
+      '<div style="font-size:11px;color:var(--muted);margin-top:4px;">'+g.remaining+' parcela(s) restante(s) · Total restante: '+fmtCur(g.remainingTotal)+'</div>'+
       '<div class="prog" style="margin-top:8px;"><div class="prog-fill" style="width:'+pp+'%;background:#b090d4;"></div></div></div>';
   }).join('');
 }
