@@ -696,7 +696,10 @@ function saveIncome(){
         db.incomes.push({id:baseId+count,groupId:baseId,desc:desc,val:val,date:iso,type:type,recur:recur});
         count++;cm+=step;while(cm>12){cm-=12;cy++;}
       }
-      if(!count)db.incomes.push({id:baseId,desc:desc,val:val,date:date,type:type,recur:'once'});
+      if(!count){
+        showToast('A data final da recorrência deve ser igual ou posterior à data inicial.');
+        return;
+      }
     }
   }
   saveDB();closeModal('m-add-income');
