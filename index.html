@@ -736,7 +736,7 @@ function saveExpense(){
   var date=document.getElementById('exp-date').value;
   var inst=parseInt(document.getElementById('exp-inst').value);
   var pay=document.getElementById('exp-pay').value;
-  if(!desc||!val||!date){showToast('Preencha todos os campos!');return;}
+  if(!desc||!Number.isFinite(val)||val<=0||!date){showToast('Preencha os campos com valores válidos!');return;}
   if(editId){
     var idx=db.expenses.findIndex(function(x){return x.id==editId;});
     if(idx>-1)db.expenses[idx]=Object.assign({},db.expenses[idx],{desc:desc,val:val,date:date,cat:selectedCat,payment:pay});
