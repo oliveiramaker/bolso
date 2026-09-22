@@ -689,7 +689,10 @@ function saveIncome(){
       var uy=uparts[0],um=uparts[1];
       var count=0,cy=sy,cm=sm;
       while((cy<uy)||(cy===uy&&cm<=um)){
-        var iso=cy+'-'+String(cm).padStart(2,'0')+'-'+String(sd).padStart(2,'0');
+        // Mantém o dia original quando existir; em meses menores, usa o último dia válido.
+        var lastDay=new Date(cy,cm,0).getDate();
+        var day=Math.min(sd,lastDay);
+        var iso=cy+'-'+String(cm).padStart(2,'0')+'-'+String(day).padStart(2,'0');
         db.incomes.push({id:baseId+count,groupId:baseId,desc:desc,val:val,date:iso,type:type,recur:recur});
         count++;cm+=step;while(cm>12){cm-=12;cy++;}
       }
