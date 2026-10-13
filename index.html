@@ -523,6 +523,8 @@ function saveDB(){try{localStorage.setItem(SK,JSON.stringify(db));}catch(err){sh
 var db=loadDB();
 if(!db.budgets)db.budgets={};
 if(!db.goals)db.goals=[];
+// Registros anteriores permanecem quitados para preservar o histórico.
+db.expenses.forEach(function(e){if(!e.status)e.status='paid';if(e.status==='paid'&&!e.paidAt)e.paidAt=e.date;});
 
 // STATE
 var curScreen='dash';
@@ -743,7 +745,7 @@ function saveExpense(){
   } else {
     var baseId=Date.now();
     if(inst===1){
-      db.expenses.push({id:baseId,desc:desc,val:val,date:date,cat:selectedCat,payment:pay,installments:1,part:1});
+      db.expenses.push({id:baseId,desc:desc,val:val,date:date,cat:selectedCat,payment:pay,installments:1,part:1,status:'pending',paidAt:null});
     } else {
       var dp=date.split('-').map(Number);
       // Divide em centavos para que a soma das parcelas seja exatamente igual ao valor informado.
@@ -753,7 +755,7 @@ function saveExpense(){
       for(var i=0;i<inst;i++){
         var nd=new Date(dp[0],dp[1]-1+i,1);var lastDay=new Date(nd.getFullYear(),nd.getMonth()+1,0).getDate();nd.setDate(Math.min(dp[2],lastDay));var iso=nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');
         var partCents=baseCents+(i<remainder?1:0);
-        db.expenses.push({id:baseId+i,groupId:baseId,desc:desc,val:partCents/100,date:iso,cat:selectedCat,payment:pay,installments:inst,part:i+1});
+        db.expenses.push({id:baseId+i,groupId:baseId,desc:desc,val:partCents/100,date:iso,cat:selectedCat,payment:pay,installments:inst,part:i+1,status:'pending',paidAt:null});
       }
     }
   }
@@ -824,6 +826,15 @@ function deleteExpense(id){
   saveDB();render();showToast('🗑 Gasto removido');
 }
 
+function toggleExpensePaid(id){
+  var ex=db.expenses.find(function(x){return x.id===id;});
+  if(!ex)return;
+  if(ex.status==='paid'){ex.status='pending';ex.paidAt=null;}
+  else{ex.status='paid';ex.paidAt=new Date().toLocaleDateString('en-CA');}
+  saveDB();render();
+  showToast(ex.status==='paid'?'✅ Conta marcada como paga':'↩ Conta voltou para pendente');
+}
+
 // FILTER HELPERS
 function getInc(y,m){var k=mk(y,m);return db.incomes.filter(function(x){return x.date&&x.date.startsWith(k);});}
 function getExp(y,m){var k=mk(y,m);return db.expenses.filter(function(x){return x.date&&x.date.startsWith(k);});}
@@ -847,14 +858,19 @@ function renderDash(y,m){
   var expenses=getExp(y,m);
   var totalIn=incomes.reduce(function(a,x){return a+x.val;},0);
   var totalOut=expenses.reduce(function(a,x){return a+x.val;},0);
-  var balance=totalIn-totalOut;
+  var paidOut=expenses.filter(function(e){return e.status==='paid';}).reduce(function(a,x){return a+x.val;},0);
+  var pendingOut=totalOut-paidOut;
+  var balance=totalIn-paidOut;
   document.getElementById('hero-in').textContent=fmtCur(totalIn);
-  document.getElementById('hero-out').textContent=fmtCur(totalOut);
-  document.getElementById('hero-sur').textContent=fmtCur(balance);
+  document.getElementById('hero-out').textContent=fmtCur(paidOut);
+  document.getElementById('hero-sur').textContent=fmtCur(balance-pendingOut);
   var balEl=document.getElementById('hero-bal');
   balEl.textContent=fmtCur(Math.abs(balance));
   balEl.className='hero-value'+(balance<0?' neg':balance>0?' pos':'');
 
+  var statusBox=document.getElementById('payment-overview');
+  if(!statusBox){statusBox=document.createElement('div');statusBox.id='payment-overview';statusBox.className='card';statusBox.style.cssText='margin:12px 0;padding:16px';var hero=document.getElementById('hero-bal');hero.closest('.card')?.insertAdjacentElement('afterend',statusBox);}
+  if(statusBox)statusBox.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px"><span>💰 Disponível: <b>'+fmtCur(balance)+'</b></span><span>⏳ Falta pagar: <b>'+fmtCur(pendingOut)+'</b></span></div>';
   // Installments alert
   var now=new Date(y,m,28);
   var groups={};
@@ -992,7 +1008,7 @@ function renderExpense(){
   var y=AD.y,m=AD.m;
   var q=(document.getElementById('exp-search').value||'').toLowerCase();
   var allExp=getExp(y,m);
-  var total=allExp.reduce(function(a,x){return a+x.val;},0);
+  var total=allExp.filter(function(e){return e.status!=='paid';}).reduce(function(a,x){return a+x.val;},0);
   document.getElementById('exp-total').textContent=fmtCur(total);
   var usedCats=[...new Set(allExp.map(function(e){return e.cat;}))];
   var usedPays=[...new Set(allExp.map(function(e){return e.payment;}))];
@@ -1029,9 +1045,10 @@ function renderExpense(){
     return '<div class="exp-item anim">'+
       '<div class="exp-ico" style="background:'+cat.c+'22;">'+cat.e+'</div>'+
       '<div class="exp-info"><div class="exp-name">'+ex.desc+(ex.installments>1?'<span class="tag">'+ex.part+'/'+ex.installments+'</span>':'')+'</div>'+
-      '<div class="exp-meta">'+fmtDate(ex.date)+' · <span class="tag-pay">'+(PEMO[ex.payment]||'')+' '+ex.payment+'</span></div></div>'+
+      '<div class="exp-meta">'+fmtDate(ex.date)+' · '+(ex.status==='paid'?'✅ Pago'+(ex.paidAt?' em '+fmtDate(ex.paidAt):''):'⏳ Pendente')+' · <span class="tag-pay">'+(PEMO[ex.payment]||'')+' '+ex.payment+'</span></div></div>'+
       '<div class="exp-right"><div class="exp-val">-'+fmtCur(ex.val)+'</div>'+
       '<div style="display:flex;gap:5px;margin-top:4px;justify-content:flex-end;">'+
+      '<button class="tag-pay" style="cursor:pointer;padding:3px 8px;color:var(--accent);" onclick="toggleExpensePaid('+ex.id+')">'+(ex.status==='paid'?'↩ Desfazer':'✓ Pagar')+'</button>'+ 
       '<button class="tag-pay" style="cursor:pointer;padding:3px 8px;" onclick="openAddExpense('+ex.id+')">✏️</button>'+
       '<button class="tag-pay" style="cursor:pointer;padding:3px 8px;color:var(--danger);" onclick="deleteExpense('+ex.id+')">🗑</button>'+
       '</div></div></div>';
