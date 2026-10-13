@@ -1048,7 +1048,8 @@ function renderExpense(){
       '<div class="exp-meta">'+fmtDate(ex.date)+' · '+(ex.status==='paid'?'✅ Pago'+(ex.paidAt?' em '+fmtDate(ex.paidAt):''):'⏳ Pendente')+' · <span class="tag-pay">'+(PEMO[ex.payment]||'')+' '+ex.payment+'</span></div></div>'+
       '<div class="exp-right"><div class="exp-val">-'+fmtCur(ex.val)+'</div>'+
       '<div style="display:flex;gap:5px;margin-top:4px;justify-content:flex-end;">'+
-      '<button class="tag-pay" style="cursor:pointer;padding:3px 8px;color:var(--accent);" onclick="toggleExpensePaid('+ex.id+')">'+(ex.status==='paid'?'↩ Desfazer':'✓ Pagar')+'</button>'+ 
+      '<label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:5px 8px;border-radius:8px;background:var(--surface2);color:'+(ex.status==='paid'?'var(--success)':'var(--muted)')+';font-size:12px;font-weight:700;white-space:nowrap;">'+
+      '<input type="checkbox" aria-label="Marcar '+(ex.status==='paid'?'como pendente':'como pago')+'" '+(ex.status==='paid'?'checked ':'')+'onchange="toggleExpensePaid('+ex.id+')" style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer;"> Pago</label>'+ 
       '<button class="tag-pay" style="cursor:pointer;padding:3px 8px;" onclick="openAddExpense('+ex.id+')">✏️</button>'+
       '<button class="tag-pay" style="cursor:pointer;padding:3px 8px;color:var(--danger);" onclick="deleteExpense('+ex.id+')">🗑</button>'+
       '</div></div></div>';
