@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bolso-cache-v3';
+const CACHE_NAME = 'bolso-cache-v4';
 const FILES_TO_CACHE = [
   './',
   './index.html',
@@ -24,7 +24,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+      return fetch(event.request).then(function(fresh){if(fresh.ok){var copy=fresh.clone();caches.open(CACHE_NAME).then(function(cache){cache.put(event.request,copy);});}return fresh;}).catch(function(){return response;});
     }).catch(() => caches.match('./index.html'))
   );
 });
