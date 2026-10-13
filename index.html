@@ -1184,22 +1184,60 @@ function exportCSV(){
   var csv=rows.map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
   dl('bolso_'+mk(AD.y,AD.m)+'.csv','data:text/csv;charset=utf-8,'+encodeURIComponent('\uFEFF'+csv));
 }
-function exportJSON(){dl('bolso_backup.json','data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(db,null,2)));}
-function importJSON(event){
-  var file=event.target.files[0];if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    try{
-      var data=JSON.parse(e.target.result);
-      if(Array.isArray(data.incomes)&&Array.isArray(data.expenses)){
-        db=data;if(!db.budgets)db.budgets={};if(!db.goals)db.goals=[];
-        saveDB();render();showToast('✅ Backup restaurado!');
-      } else showToast('❌ Arquivo inválido');
-    } catch(err){showToast('❌ Erro ao importar');}
-  };
-  reader.readAsText(file);event.target.value='';
+function exportJSON(){
+  try{
+    var payload={format:'bolso-backup',version:2,exportedAt:new Date().toISOString(),data:db};
+    var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download='bolso-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},60000);
+    showToast('✅ Backup gerado. Confira seus downloads.');
+  }catch(err){console.error('Exportação falhou',err);showToast('❌ Falha ao gerar backup');}
 }
-function dl(name,href){var a=document.createElement('a');a.download=name;a.href=href;a.click();}
+function normalizeBackup(raw){
+  var data=raw&&raw.format==='bolso-backup'?raw.data:raw;
+  if(!data||typeof data!=='object'||!Array.isArray(data.incomes)||!Array.isArray(data.expenses))
+    throw new Error('O arquivo não contém entradas e despesas válidas.');
+  function validEntry(x){return x&&typeof x==='object'&&typeof x.desc==='string'&&typeof x.date==='string'&&/^\\d{4}-\\d{2}-\\d{2}$/.test(x.date)&&Number.isFinite(Number(x.val))&&Number(x.val)>=0;}
+  if(!data.incomes.every(validEntry)||!data.expenses.every(validEntry))
+    throw new Error('Há movimentações inválidas no arquivo.');
+  if(data.goals!==undefined&&!Array.isArray(data.goals))throw new Error('Metas inválidas.');
+  if(data.budgets!==undefined&&(typeof data.budgets!=='object'||data.budgets===null||Array.isArray(data.budgets)))throw new Error('Orçamentos inválidos.');
+  var restored=JSON.parse(JSON.stringify(data));
+  restored.budgets=restored.budgets||{};
+  restored.goals=restored.goals||[];
+  restored.expenses.forEach(function(e){if(e.status!=='paid'&&e.status!=='pending')e.status='paid';if(e.status==='paid'&&!e.paidAt)e.paidAt=e.date;});
+  return restored;
+}
+function importJSON(event){
+  var input=event.target,file=input.files&&input.files[0];
+  if(!file)return;
+  input.value='';
+  if(file.size>20*1024*1024){showToast('❌ Backup maior que 20 MB');return;}
+  var reader=new FileReader();
+  reader.onerror=function(){showToast('❌ Não foi possível ler o arquivo');};
+  reader.onload=function(){
+    try{
+      var restored=normalizeBackup(JSON.parse(String(reader.result||'')));
+      var message='Restaurar '+restored.incomes.length+' entrada(s) e '+restored.expenses.length+' despesa(s)?\\n\\nOs dados atuais serão substituídos. Faça um backup antes de continuar.';
+      if(!confirm(message))return;
+      // Persistir primeiro: se o armazenamento falhar, manter os dados atuais.
+      localStorage.setItem(SK,JSON.stringify(restored));
+      db=restored;
+      activeCatF='all';activePayF='all';
+      closeModal('m-settings');
+      render();
+      showToast('✅ Backup restaurado com sucesso!');
+    }catch(err){console.error('Falha ao importar backup',err);alert('Não foi possível restaurar o backup: '+(err.message||'arquivo inválido'));}
+  };
+  reader.readAsText(file,'UTF-8');
+}
+function dl(name,href){
+  var a=document.createElement('a');a.download=name;a.href=href;
+  document.body.appendChild(a);a.click();a.remove();
+}
 
 // RESET
 function confirmReset(){closeModal('m-settings');openModal('m-confirm-reset');}
