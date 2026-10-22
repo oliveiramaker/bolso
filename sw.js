@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bolso-cache-v6';
+const CACHE_NAME = 'bolso-cache-v7';
 const FILES_TO_CACHE = [
   './',
   './index.html',
