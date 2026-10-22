@@ -276,6 +276,54 @@ body:before{background:radial-gradient(ellipse 90% 46% at 5% -6%,rgba(156,127,24
 @media(max-width:375px){.screen-body{padding-left:14px;padding-right:14px}.hero{padding:25px 18px}.hero-stat{padding:10px 7px}.topbar{padding-left:17px;padding-right:17px}}
 @media(prefers-reduced-motion:reduce){.hero,.screen.active .screen-body{animation:none!important}.screen,.card,.nav-btn,.fab{transition:none!important}}
 
+
+/* BOLSO ONE: complete dashboard layout, not a recolor */
+.wallet-topbar{align-items:flex-start;padding-top:calc(var(--safe-top) + 10px)}
+.wallet-eyebrow,.wallet-kicker{font-size:9px;font-weight:850;letter-spacing:1.8px;color:var(--muted)}
+.wallet-topbar .topbar-title{font-size:clamp(22px,5vw,30px);margin-top:5px;letter-spacing:-1.2px}
+.wallet-topbar .topbar-title:after{display:none}.wallet-wave{color:var(--accent)}
+.wallet-topbar .month-badge{font-size:11px;border:0;box-shadow:none;padding:11px;border-radius:13px}.wallet-avatar{border-radius:50%;font-size:19px}
+.wallet-home{padding-top:10px}
+.wallet-balance-card{position:relative;min-height:218px;border-radius:30px;overflow:hidden;color:#fff;background:linear-gradient(125deg,#6055dc,#9170ed 54%,#c48fe5);box-shadow:0 23px 42px rgba(108,80,210,.25);isolation:isolate;animation:walletEnter .7s cubic-bezier(.2,1,.3,1) both}
+.wallet-orb{position:absolute;pointer-events:none;border-radius:50%;filter:blur(1px)}
+.wallet-orb-one{width:240px;height:240px;right:-65px;top:-95px;background:radial-gradient(circle at 30% 35%,rgba(255,255,255,.46),rgba(255,255,255,.06) 42%,transparent 70%);box-shadow:0 0 0 36px rgba(255,255,255,.055),0 0 0 75px rgba(255,255,255,.045);animation:walletOrbit 8s ease-in-out infinite alternate}
+.wallet-orb-two{width:220px;height:220px;bottom:-170px;left:-75px;background:rgba(255,255,255,.08);box-shadow:0 0 0 45px rgba(255,255,255,.045)}
+.wallet-card-content{position:relative;z-index:1;padding:24px 26px;display:flex;flex-direction:column;min-height:218px}
+.wallet-card-head,.wallet-card-bottom{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:850;letter-spacing:1.5px}
+.wallet-card-dots{letter-spacing:-4px;font-size:16px;opacity:.7}
+.wallet-balance-caption{margin-top:35px;font-size:12px;opacity:.86;display:flex;align-items:center;gap:10px}
+.wallet-eye{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:2px 8px;cursor:pointer}
+.wallet-balance-card .hero-value{color:white!important;margin:8px 0 22px;font-size:clamp(33px,8vw,49px);letter-spacing:-1.7px;font-weight:780}
+.wallet-card-bottom{margin-top:auto;opacity:.8;font-size:9px}
+.wallet-pulse{display:flex;align-items:center;gap:8px;padding:13px 4px 18px;font-size:11px;font-weight:700;color:var(--text2)}
+.wallet-pulse-dot{width:7px;height:7px;background:var(--success);border-radius:50%;box-shadow:0 0 0 5px rgba(35,181,131,.12);animation:walletBlink 2.5s infinite}
+.wallet-pulse-arrow{margin-left:auto;font-size:16px;color:var(--success)}
+.wallet-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:4px 0 30px}
+.wallet-actions button{background:none;border:0;color:var(--text);font-size:11px;font-weight:730;display:flex;align-items:center;flex-direction:column;gap:9px;cursor:pointer}
+.wallet-action-icon{width:57px;height:57px;display:grid;place-items:center;border-radius:20px;background:var(--surface);font-size:25px;font-weight:700;box-shadow:0 7px 22px rgba(60,42,105,.065);transition:transform .3s cubic-bezier(.2,1.8,.3,1),box-shadow .3s}
+.wallet-actions button:active .wallet-action-icon{transform:scale(.83) rotate(-8deg)}
+.wallet-in{color:#24b58f}.wallet-out{color:#ef8a85}.wallet-list{color:#8a78e6}.wallet-share{color:#6c9bdc}
+.wallet-section-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:24px 0 13px}
+.wallet-section-heading h2{font-size:21px;letter-spacing:-.7px;font-weight:790;margin-top:5px}
+.wallet-section-heading button{background:none;border:0;color:var(--accent);font-size:11px;font-weight:750;cursor:pointer;padding:8px 0}
+.wallet-metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wallet-metric{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:17px 15px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow-card);animation:walletEnter .55s ease both}
+.wallet-metric-icon{width:35px;height:35px;background:var(--surface2);border-radius:12px;display:grid;place-items:center;font-size:20px}
+.wallet-metric span{font-size:11px;color:var(--muted);font-weight:650}.wallet-metric strong{font-size:clamp(16px,4.5vw,22px);letter-spacing:-.6px}.wallet-metric small{font-size:10px;color:var(--muted)}
+.wallet-metric-wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:13px;background:linear-gradient(115deg,var(--surface),var(--surface2))}
+.wallet-metric-wide div:nth-child(2){display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.wallet-metric-wide button{border:0;background:var(--accent);color:white;border-radius:12px;padding:10px;font-size:10px;font-weight:750}
+.wallet-insights{border:1px solid var(--border);border-radius:25px;background:var(--surface);padding:20px;box-shadow:var(--shadow-card)}
+.wallet-activity,.wallet-chart{border:1px solid var(--border);border-radius:25px;background:var(--surface);padding:18px;margin-bottom:12px;box-shadow:var(--shadow-card)}
+.wallet-activity:empty{min-height:70px}.wallet-whatsapp-header{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:750}
+.wallet-whatsapp-header span{font-size:20px;color:var(--accent)}
+#payment-overview{display:none}
+@keyframes walletEnter{from{opacity:0;transform:translateY(17px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes walletOrbit{from{transform:translate(-8px,7px)}to{transform:translate(13px,-12px)}}
+@keyframes walletBlink{50%{box-shadow:0 0 0 8px rgba(35,181,131,.02)}}
+@media(min-width:600px){.wallet-home{padding-left:40px;padding-right:40px}.wallet-balance-card,.wallet-card-content{min-height:265px}.wallet-balance-caption{margin-top:65px}.wallet-actions{max-width:520px;margin-left:auto;margin-right:auto}.wallet-action-icon{width:68px;height:68px}}
+@media(max-width:370px){.wallet-action-icon{width:49px;height:49px;border-radius:17px}.wallet-metric{padding:13px 11px}.wallet-topbar .topbar-title{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.wallet-balance-card,.wallet-orb-one,.wallet-pulse-dot,.wallet-metric{animation:none!important}}
 </style>
 </head>
 <body>
@@ -284,49 +332,46 @@ body:before{background:radial-gradient(ellipse 90% 46% at 5% -6%,rgba(156,127,24
 
 <!-- DASHBOARD -->
 <div class="screen active" id="s-dash">
-  <div class="topbar">
-    <div class="topbar-title">Bolso 💸</div>
-    <div class="topbar-right">
-      <div class="month-badge" id="badge-dash" onclick="openMonthPicker()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span id="lbl-dash">mai 2025</span>
-      </div>
-      <div class="icon-btn" onclick="openSettingsModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </div>
-    </div>
+  <div class="topbar wallet-topbar">
+    <div><div class="wallet-eyebrow">SEU ESPAÇO FINANCEIRO</div><div class="topbar-title">Olá, seu Bolso<span class="wallet-wave"> ✳</span></div></div>
+    <div class="topbar-right"><button class="month-badge" id="badge-dash" onclick="openMonthPicker()"><span id="lbl-dash"></span> ▾</button><button class="icon-btn wallet-avatar" aria-label="Configurações" onclick="openSettingsModal()">⚙</button></div>
   </div>
-  <div class="screen-body">
-    <div class="hero anim">
-      <div class="hero-label">saldo do mês</div>
-      <div class="hero-value" id="hero-bal">R$ 0,00</div>
-      <div class="hero-row">
-        <div class="hero-stat"><div class="hero-stat-label">Entradas</div><div class="hero-stat-val inc" id="hero-in">R$ 0,00</div></div>
-        <div class="hero-stat"><div class="hero-stat-label">Saídas</div><div class="hero-stat-val exp" id="hero-out">R$ 0,00</div></div>
-        <div class="hero-stat"><div class="hero-stat-label">Sobra</div><div class="hero-stat-val sur" id="hero-sur">R$ 0,00</div></div>
+  <div class="screen-body wallet-home">
+    <div class="wallet-balance-card">
+      <div class="wallet-orb wallet-orb-one"></div><div class="wallet-orb wallet-orb-two"></div>
+      <div class="wallet-card-content">
+        <div class="wallet-card-head"><span>◈ BOLSO ONE</span><span class="wallet-card-dots">●●●●</span></div>
+        <div class="wallet-balance-caption">Saldo disponível <button class="wallet-eye" onclick="toggleBalancePrivacy()" aria-label="Mostrar ou ocultar valores">◉</button></div>
+        <div class="hero-value" id="hero-bal">R$ 0,00</div>
+        <div class="wallet-card-bottom"><span>MEU DINHEIRO</span><span>◉ 2026</span></div>
       </div>
     </div>
-    <div id="bolso-insights" class="card" style="padding:16px;margin:12px 0;"></div>
-    <div class="card" id="bolso-whatsapp">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;"><div><div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;">BOLSO CONECTADO</div><div style="font-size:18px;font-weight:800;margin-top:5px;">💬 Seu financeiro no WhatsApp</div></div><div style="font-size:30px;">↗</div></div>
-      <div class="bolso-wa-actions">
-        <button type="button" onclick="shareBolsoWhatsApp('summary')">📊 Resumo do mês</button>
-        <button type="button" onclick="shareBolsoWhatsApp('bills')">📋 Contas pendentes</button>
-        <button type="button" onclick="shareBolsoWhatsApp('reminder')">🔔 Lembrete de conta</button>
-        <button type="button" onclick="shareBolsoWhatsApp('link')">✨ Indicar Bolso</button>
-      </div>
-      <div class="bolso-wa-note">Você revisa a mensagem antes de enviar. Nada é enviado automaticamente. Evite compartilhar valores financeiros em grupos.</div>
+    <div class="wallet-pulse"><span class="wallet-pulse-dot"></span><span id="wallet-health">Seu dinheiro, sob controle</span><span class="wallet-pulse-arrow">↗</span></div>
+    <div class="wallet-actions">
+      <button onclick="openAddIncome(null)"><span class="wallet-action-icon wallet-in">↙</span><span>Receber</span></button>
+      <button onclick="openAddExpense(null)"><span class="wallet-action-icon wallet-out">↗</span><span>Pagar</span></button>
+      <button onclick="goTo('expense')"><span class="wallet-action-icon wallet-list">▤</span><span>Extrato</span></button>
+      <button onclick="shareBolsoWhatsApp('summary')"><span class="wallet-action-icon wallet-share">↗</span><span>Enviar</span></button>
     </div>
+    <div class="wallet-section-heading"><div><span class="wallet-kicker">VISÃO GERAL</span><h2>Seu mês em foco</h2></div><button onclick="goTo('reports')">Detalhes ↗</button></div>
+    <div class="wallet-metrics">
+      <div class="wallet-metric"><div class="wallet-metric-icon wallet-in">↙</div><span>Entradas</span><strong id="hero-in">R$ 0,00</strong><small>Recebimentos do mês</small></div>
+      <div class="wallet-metric"><div class="wallet-metric-icon wallet-out">↗</div><span>Já pago</span><strong id="hero-out">R$ 0,00</strong><small>Dinheiro que saiu</small></div>
+      <div class="wallet-metric wallet-metric-wide"><div class="wallet-metric-icon wallet-list">✦</div><div><span>Previsão após as contas</span><strong id="hero-sur">R$ 0,00</strong></div><button onclick="goTo('expense')">Ver contas →</button></div>
+    </div>
+    <div class="wallet-section-heading"><div><span class="wallet-kicker">INTELIGÊNCIA</span><h2>Seu copiloto</h2></div></div>
+    <div id="bolso-insights" class="wallet-insights"></div>
+    <div class="wallet-section-heading"><div><span class="wallet-kicker">MOVIMENTAÇÕES</span><h2>Últimas atividades</h2></div><button onclick="goTo('expense')">Ver todas →</button></div>
+    <div class="wallet-activity" id="recent-tx"></div>
+    <div class="wallet-section-heading"><div><span class="wallet-kicker">ANÁLISES</span><h2>Para onde vai?</h2></div></div>
+    <div class="wallet-chart"><div id="donut-chart"></div></div>
+    <div class="wallet-chart"><div id="bar-chart"></div><div id="bar-labels" style="display:flex;gap:5px;margin-top:5px;padding:0 2px;"></div></div>
     <div id="install-alert-wrap"></div>
-    <div class="sec">Gastos por categoria</div>
-    <div class="card"><div id="donut-chart"></div></div>
-    <div class="sec">Evolução mensal <a onclick="goTo('reports')">Ver mais</a></div>
-    <div class="card" style="padding:14px 12px 8px;">
-      <div id="bar-chart"></div>
-      <div id="bar-labels" style="display:flex;gap:5px;margin-top:5px;padding:0 2px;"></div>
+    <div class="wallet-section-heading"><div><span class="wallet-kicker">CONECTADO</span><h2>Bolso + WhatsApp</h2></div></div>
+    <div class="wallet-chart" id="bolso-whatsapp"><div class="wallet-whatsapp-header">Compartilhe suas finanças quando quiser <span>↗</span></div>
+      <div class="bolso-wa-actions"><button onclick="shareBolsoWhatsApp('summary')">📊 Resumo</button><button onclick="shareBolsoWhatsApp('bills')">📋 Pendências</button><button onclick="shareBolsoWhatsApp('reminder')">🔔 Lembrete</button><button onclick="shareBolsoWhatsApp('link')">✨ Indicar</button></div>
+      <div class="bolso-wa-note">O WhatsApp abre com a mensagem pronta; você decide se envia.</div>
     </div>
-    <div class="sec">Últimas transações <a onclick="goTo('expense')">Ver tudo</a></div>
-    <div class="card" id="recent-tx"></div>
   </div>
 </div>
 
@@ -954,6 +999,8 @@ function render(){
 }
 
 // DASHBOARD
+var walletBalanceHidden=false;
+function toggleBalancePrivacy(){walletBalanceHidden=!walletBalanceHidden;render();}
 function renderDash(y,m){
   var incomes=getInc(y,m);
   var expenses=getExp(y,m);
@@ -966,12 +1013,13 @@ function renderDash(y,m){
   document.getElementById('hero-out').textContent=fmtCur(paidOut);
   document.getElementById('hero-sur').textContent=fmtCur(balance-pendingOut);
   var balEl=document.getElementById('hero-bal');
-  balEl.textContent=fmtCur(Math.abs(balance));
+  balEl.textContent=walletBalanceHidden?'R$ •••••':fmtCur(balance);
   balEl.className='hero-value'+(balance<0?' neg':balance>0?' pos':'');
 
   var statusBox=document.getElementById('payment-overview');
-  if(!statusBox){statusBox=document.createElement('div');statusBox.id='payment-overview';statusBox.className='card';statusBox.style.cssText='margin:12px 0;padding:16px';var hero=document.getElementById('hero-bal');hero.closest('.card')?.insertAdjacentElement('afterend',statusBox);}
+  if(!statusBox){statusBox=document.createElement('div');statusBox.id='payment-overview';statusBox.className='card';statusBox.style.cssText='margin:12px 0;padding:16px';var hero=document.getElementById('hero-bal');hero.closest('.wallet-balance-card')?.insertAdjacentElement('afterend',statusBox);}
   if(statusBox)statusBox.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px"><span>💰 Disponível: <b>'+fmtCur(balance)+'</b></span><span>⏳ Falta pagar: <b>'+fmtCur(pendingOut)+'</b></span></div>';
+  var health=document.getElementById('wallet-health');if(health)health.textContent=pendingOut>balance?'Atenção: contas pendentes superam seu saldo':'Você tem '+fmtCur(pendingOut)+' em contas pendentes';
   renderSmartInsights(y,m,balance,pendingOut);
   // Installments alert
   var now=new Date(y,m,28);
