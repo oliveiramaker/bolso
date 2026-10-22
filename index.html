@@ -216,6 +216,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
         <div class="hero-stat"><div class="hero-stat-label">Sobra</div><div class="hero-stat-val sur" id="hero-sur">R$ 0,00</div></div>
       </div>
     </div>
+    <div id="bolso-insights" class="card" style="padding:16px;margin:12px 0;"></div>
     <div id="install-alert-wrap"></div>
     <div class="sec">Gastos por categoria</div>
     <div class="card"><div id="donut-chart"></div></div>
@@ -871,6 +872,7 @@ function renderDash(y,m){
   var statusBox=document.getElementById('payment-overview');
   if(!statusBox){statusBox=document.createElement('div');statusBox.id='payment-overview';statusBox.className='card';statusBox.style.cssText='margin:12px 0;padding:16px';var hero=document.getElementById('hero-bal');hero.closest('.card')?.insertAdjacentElement('afterend',statusBox);}
   if(statusBox)statusBox.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px"><span>💰 Disponível: <b>'+fmtCur(balance)+'</b></span><span>⏳ Falta pagar: <b>'+fmtCur(pendingOut)+'</b></span></div>';
+  renderSmartInsights(y,m,balance,pendingOut);
   // Installments alert
   var now=new Date(y,m,28);
   var groups={};
@@ -925,6 +927,44 @@ function renderDash(y,m){
   }).join('');
 }
 
+// SMART INSIGHTS: safe daily spending, upcoming bills, and purchase simulator.
+var bolsoSimAmount=0;
+function setBolsoSimulation(value){
+  var n=Number(String(value).replace(',','.'));
+  bolsoSimAmount=Number.isFinite(n)&&n>=0?n:0;
+  renderSmartInsights(AD.y,AD.m);
+}
+function renderSmartInsights(y,m,available,pending){
+  var el=document.getElementById('bolso-insights');
+  if(!el)return;
+  var today=new Date(),selectedMonth=mk(y,m),todayMonth=mk(today.getFullYear(),today.getMonth());
+  var cutoff=selectedMonth===todayMonth?today.getDate():1;
+  var lastDay=new Date(y,m+1,0).getDate();
+  var days=Math.max(1,lastDay-cutoff+1);
+  var inc=getInc(y,m).reduce(function(a,x){return a+Number(x.val||0);},0);
+  var exp=getExp(y,m);
+  var paid=exp.filter(function(x){return x.status==='paid';}).reduce(function(a,x){return a+Number(x.val||0);},0);
+  var outstanding=exp.filter(function(x){return x.status!=='paid';}).reduce(function(a,x){return a+Number(x.val||0);},0);
+  var free=inc-paid-outstanding;
+  var perDay=Math.max(0,free/days);
+  var todayIso=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+  var upcoming=exp.filter(function(x){return x.status!=='paid'&&x.date&&x.date>=todayIso;}).sort(function(a,b){return a.date.localeCompare(b.date);}).slice(0,3);
+  var overdue=exp.filter(function(x){return x.status!=='paid'&&x.date&&x.date<todayIso;});
+  var overdueSum=overdue.reduce(function(a,x){return a+Number(x.val||0);},0);
+  var sim=free-bolsoSimAmount;
+  function safe(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  el.innerHTML='<div style="font-size:16px;font-weight:800;margin-bottom:12px;">✨ Radar financeiro</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">'+
+      '<div style="background:var(--surface2);border-radius:12px;padding:12px;"><div style="font-size:11px;color:var(--muted);">💚 Livre por dia</div><div style="font-weight:800;font-size:20px;color:var(--accent);margin-top:5px;">'+fmtCur(perDay)+'</div><div style="font-size:10px;color:var(--muted);margin-top:4px;">Após reservar contas pendentes · '+days+' dia(s)</div></div>'+
+      '<div style="background:var(--surface2);border-radius:12px;padding:12px;"><div style="font-size:11px;color:var(--muted);">🚨 Contas atrasadas</div><div style="font-weight:800;font-size:20px;color:'+(overdue.length?'var(--danger)':'var(--success)')+';margin-top:5px;">'+overdue.length+'</div><div style="font-size:10px;color:var(--muted);margin-top:4px;">'+fmtCur(overdueSum)+' em aberto</div></div>'+
+    '</div>'+
+    '<div style="font-weight:700;font-size:13px;margin-bottom:7px;">📅 Próximas contas a vencer</div>'+
+    (upcoming.length?upcoming.map(function(x){return '<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:7px 0;border-bottom:1px solid var(--border);"><span>'+safe(x.desc)+' · '+fmtDate(x.date)+'</span><b>'+fmtCur(x.val)+'</b></div>';}).join(''):'<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Nenhuma conta futura pendente neste mês.</div>')+
+    '<div style="font-weight:700;font-size:13px;margin:16px 0 8px;">🧮 E se eu comprar agora?</div>'+
+    '<div style="display:flex;gap:8px;align-items:center;"><input id="bolso-sim" aria-label="Valor da compra simulada" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Valor da compra (R$)" value="'+(bolsoSimAmount||'')+'" oninput="setBolsoSimulation(this.value)" style="min-width:0;flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:9px;padding:10px;">'+
+    '<span id="bolso-sim-result" style="font-size:12px;font-weight:700;color:'+(sim<0?'var(--danger)':'var(--success)')+';">'+fmtCur(sim)+'</span></div>'+
+    '<div style="font-size:11px;color:var(--muted);margin-top:6px;">Sobra estimada após quitar as contas e fazer essa compra. Simulação não cria lançamento.</div>';
+}
 // BAR CHART
 function renderBarChart(barId,labId,nMonths,curY,curM){
   var pts=[];
