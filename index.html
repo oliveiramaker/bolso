@@ -324,7 +324,7 @@ body:before{content:none}
     <div class="wallet-metrics">
       <div class="wallet-metric"><div class="wallet-metric-icon wallet-in">↙</div><span>Entradas</span><strong id="hero-in">R$ 0,00</strong><small>Recebimentos do mês</small></div>
       <div class="wallet-metric"><div class="wallet-metric-icon wallet-out">↗</div><span>Já pago</span><strong id="hero-out">R$ 0,00</strong><small>Dinheiro que saiu</small></div>
-      <div class="wallet-metric wallet-metric-wide"><div class="wallet-metric-icon wallet-list">✦</div><div><span>Previsão após as contas</span><strong id="hero-sur">R$ 0,00</strong></div><button onclick="goTo('expense')">Ver contas →</button></div>
+      <div class="wallet-metric wallet-metric-wide"><div class="wallet-metric-icon wallet-list">◉</div><div><span>Saldo disponível agora</span><strong id="hero-sur">R$ 0,00</strong><small>Entradas menos despesas pagas</small></div><button onclick="goTo('expense')">Ver contas →</button></div><div class="wallet-metric wallet-metric-wide"><div class="wallet-metric-icon wallet-out">⌛</div><div><span>Contas ainda pendentes</span><strong id="hero-pending">R$ 0,00</strong></div></div><div class="wallet-metric wallet-metric-wide"><div class="wallet-metric-icon wallet-list">✦</div><div><span>Previsão após todas as contas</span><strong id="hero-forecast">R$ 0,00</strong></div></div>
     </div>
     <div class="wallet-section-heading"><div><span class="wallet-kicker">INTELIGÊNCIA</span><h2>Seu copiloto</h2></div></div>
     <div id="bolso-insights" class="wallet-insights"></div>
@@ -973,7 +973,9 @@ function renderDash(y,m){
   var balance=totalIn-paidOut;
   document.getElementById('hero-in').textContent=fmtCur(totalIn);
   document.getElementById('hero-out').textContent=fmtCur(paidOut);
-  document.getElementById('hero-sur').textContent=fmtCur(balance-pendingOut);
+  document.getElementById('hero-sur').textContent=fmtCur(balance);
+  document.getElementById('hero-pending').textContent=fmtCur(pendingOut);
+  document.getElementById('hero-forecast').textContent=fmtCur(balance-pendingOut);
   var balEl=document.getElementById('hero-bal');
   balEl.textContent=walletBalanceHidden?'R$ •••••':fmtCur(balance);
   balEl.className='hero-value'+(balance<0?' neg':balance>0?' pos':'');
