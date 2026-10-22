@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0f">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f5f8">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0f18">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f2f7">
 <title>Bolso · Finanças</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -220,6 +220,61 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:rad
 @keyframes bolsoReveal{from{opacity:.5;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.hero,.screen.active .screen-body{animation:none!important}*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 @media(min-width:760px){#app{max-width:760px}.bottom-nav{max-width:760px}.screen-body{padding-left:32px;padding-right:32px}.hero{padding:36px}.fab{right:max(24px,calc((100vw - 760px)/2 + 30px))}}
+
+
+/* BOLSO / AURA — iOS-inspired tactile design system */
+:root{color-scheme:light;--bg:#f2f2f7;--surface:#ffffff;--surface2:#f2f3f8;--surface3:#e8e9f1;--border:rgba(24,28,47,.065);--border2:rgba(24,28,47,.11);--text:#151722;--text2:#4d5061;--muted:#85889b;--accent:#6555ed;--accent2:#9587ff;--danger:#ef526d;--success:#159e80;--warn:#e59b35;--info:#477cda;--nav-bg:rgba(255,255,255,.76);--hero-bg:linear-gradient(126deg,#7566fb 0%,#9c6be7 49%,#e9a0bd 100%);--hero-border:rgba(255,255,255,.3);--hero-glow:rgba(255,255,255,.22);--income-hero:linear-gradient(125deg,#e4faf2,#d8f6ed);--expense-hero:linear-gradient(125deg,#fff1f2,#ffe7eb);--stat-bg:rgba(255,255,255,.16);--shadow-card:0 10px 35px rgba(45,40,94,.045);--r:25px}
+@media(prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0e0f18;--surface:#1b1c2b;--surface2:#27283a;--surface3:#34354a;--border:rgba(236,231,255,.065);--border2:rgba(236,231,255,.13);--text:#f9f7ff;--text2:#d2cde3;--muted:#9c97af;--accent:#a99aff;--accent2:#c0a6ff;--danger:#ff728d;--success:#58d8b1;--warn:#ffc278;--info:#8bbcff;--nav-bg:rgba(29,28,45,.78);--hero-bg:linear-gradient(125deg,#584bd2 0%,#7851b5 50%,#ab628b 100%);--hero-border:rgba(255,255,255,.12);--hero-glow:rgba(255,255,255,.1);--income-hero:linear-gradient(125deg,#1c433c,#22443c);--expense-hero:linear-gradient(125deg,#47252f,#40232d);--stat-bg:rgba(255,255,255,.11);--shadow-card:0 12px 45px rgba(0,0,0,.12)}}
+html,body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text)}
+body:before{background:radial-gradient(ellipse 90% 46% at 5% -6%,rgba(156,127,249,.15),transparent),radial-gradient(ellipse 60% 50% at 100% 110%,rgba(247,155,198,.12),transparent)}
+#app{max-width:760px}
+.topbar{background:linear-gradient(to bottom,var(--bg) 72%,transparent);padding:calc(var(--safe-top) + 14px) 24px 12px;align-items:center}
+.topbar-title{font-family:inherit;font-size:31px;font-weight:790;letter-spacing:-1.55px}
+.topbar-title:after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-left:7px;vertical-align:middle;box-shadow:0 0 0 4px rgba(138,113,255,.11)}
+.screen-body{padding:8px 22px 150px;overscroll-behavior-y:contain}
+.screen{transition:opacity .32s ease,transform .48s cubic-bezier(.22,1,.36,1);transform:translateY(12px) scale(.986)}
+.screen.active{transform:translateY(0) scale(1)}
+.screen.active .screen-body{animation:auraScreen .46s cubic-bezier(.22,1,.36,1) both}
+.hero{border-radius:35px;padding:31px 25px 28px;background:var(--hero-bg);border:1px solid var(--hero-border);box-shadow:0 20px 50px rgba(112,78,183,.21),inset 0 1px 1px rgba(255,255,255,.2);isolation:isolate;animation:auraFloat 9s ease-in-out infinite}
+.hero:before{width:250px;height:250px;top:-140px;right:-40px;background:radial-gradient(circle,rgba(255,255,255,.35),transparent 70%);filter:blur(5px)}
+.hero:after{width:210px;height:210px;right:-58px;top:-74px;border:1px solid rgba(255,255,255,.22);box-shadow:0 0 0 33px rgba(255,255,255,.035),0 0 0 75px rgba(255,255,255,.025)}
+.hero-label,.hero-value,.hero-stat-label,.hero-stat-val{color:#fff!important}
+.hero-label{font-size:11px;font-weight:750;letter-spacing:1.6px;opacity:.83}
+.hero-value{font-family:inherit;font-size:clamp(39px,9vw,56px);font-weight:780;letter-spacing:-2.5px;margin:16px 0 26px}
+.hero-row{gap:8px}.hero-stat{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:12px 10px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hero-stat-label{opacity:.8;font-size:10px}.hero-stat-val{font-size:clamp(11px,2.8vw,15px);font-weight:720}
+.card{border-radius:27px;border:1px solid var(--border);background:var(--surface);padding:21px;box-shadow:var(--shadow-card);transition:transform .32s cubic-bezier(.22,1,.36,1),box-shadow .32s ease}
+.card:active{transform:scale(.993)}
+#bolso-insights{background:linear-gradient(155deg,var(--surface),var(--surface2));border:1px solid var(--border2)}
+#bolso-whatsapp{background:linear-gradient(135deg,var(--surface),var(--surface2))}
+.topbar .month-badge,.icon-btn{background:var(--surface);border:1px solid var(--border);border-radius:15px;box-shadow:0 3px 12px rgba(50,42,87,.05)}
+.month-badge{font-weight:700;padding:10px 13px}.icon-btn{height:42px;width:42px}
+.bottom-nav{bottom:calc(var(--safe-bottom) + 8px);width:calc(100% - 30px);max-width:690px;background:var(--nav-bg);border:1px solid var(--border2);border-radius:28px;padding:8px 7px;box-shadow:0 14px 45px rgba(34,26,72,.18),inset 0 1px 0 rgba(255,255,255,.3);backdrop-filter:blur(32px) saturate(160%);-webkit-backdrop-filter:blur(32px) saturate(160%)}
+.nav-btn{border-radius:21px;padding:11px 4px;gap:5px;font-size:10px;font-weight:670;transition:transform .34s cubic-bezier(.2,1.8,.3,1),background .24s}
+.nav-btn.active{background:var(--surface2);color:var(--accent);transform:translateY(-3px)}
+.nav-btn.active svg{filter:none;transform:scale(1.12)}
+.nav-btn svg{transition:transform .35s cubic-bezier(.2,1.8,.3,1)}
+.fab{right:max(22px,calc((100vw - 760px)/2 + 26px));bottom:calc(var(--safe-bottom) + 94px);width:62px;height:62px;border-radius:22px;background:linear-gradient(135deg,#8677ff,#b38aff);color:white;box-shadow:0 14px 34px rgba(113,90,227,.34);transition:transform .35s cubic-bezier(.2,1.8,.3,1)}
+.fab:active{transform:scale(.87) rotate(12deg)}
+.sec{font-family:inherit;font-size:11px;font-weight:800;letter-spacing:1.3px;color:var(--muted);margin-top:28px}
+.btn,.btn-primary{font-family:inherit;font-weight:760;border-radius:17px}
+.btn-primary{background:var(--accent);color:#fff}
+.fi,.search-input,.sort-select{border-radius:16px;font-family:inherit;background:var(--surface2)}
+.sheet{max-width:760px;border-radius:34px 34px 0 0;background:var(--surface);box-shadow:0 -18px 65px rgba(20,13,45,.18)}
+.overlay{background:rgba(25,20,48,.42);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.overlay.open .sheet{transition-timing-function:cubic-bezier(.16,1,.3,1)}
+.inc-item,.exp-item,.budget-item,.goal-item{border-radius:20px;background:var(--surface2);border:1px solid var(--border)}
+.tx-ico,.exp-ico{border-radius:17px}
+.chip{border-radius:16px;padding:9px 14px;font-weight:650}.chip.active{background:var(--accent);color:white;border-color:var(--accent)}
+.bolso-wa-actions button{border-radius:17px;background:var(--surface);border-color:var(--border2);font-family:inherit;font-weight:730;transition:transform .28s cubic-bezier(.2,1.8,.3,1)}
+.bolso-wa-actions button:active{transform:scale(.95)}
+.toast{background:var(--surface);border-radius:22px;box-shadow:0 12px 35px rgba(40,28,82,.2);font-weight:700}
+@keyframes auraFloat{0%,100%{transform:translateY(0);filter:saturate(1)}50%{transform:translateY(-3px);filter:saturate(1.08)}}
+@keyframes auraScreen{from{opacity:.5;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes auraPop{0%{transform:scale(.96);opacity:.4}70%{transform:scale(1.018);opacity:1}100%{transform:scale(1)}}
+@media(hover:hover){.card:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(50,37,100,.09)}.bolso-wa-actions button:hover{transform:translateY(-2px)}}
+@media(max-width:375px){.screen-body{padding-left:14px;padding-right:14px}.hero{padding:25px 18px}.hero-stat{padding:10px 7px}.topbar{padding-left:17px;padding-right:17px}}
+@media(prefers-reduced-motion:reduce){.hero,.screen.active .screen-body{animation:none!important}.screen,.card,.nav-btn,.fab{transition:none!important}}
 
 </style>
 </head>
