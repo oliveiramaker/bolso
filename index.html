@@ -932,7 +932,8 @@ var bolsoSimAmount=0;
 function setBolsoSimulation(value){
   var n=Number(String(value).replace(',','.'));
   bolsoSimAmount=Number.isFinite(n)&&n>=0?n:0;
-  renderSmartInsights(AD.y,AD.m);
+  var result=document.getElementById('bolso-sim-result');
+  if(result){var income=getInc(AD.y,AD.m).reduce(function(a,x){return a+Number(x.val||0);},0);var bills=getExp(AD.y,AD.m).reduce(function(a,x){return a+Number(x.val||0);},0);var remaining=income-bills-bolsoSimAmount;result.textContent=fmtCur(remaining);result.style.color=remaining<0?'var(--danger)':'var(--success)';}
 }
 function renderSmartInsights(y,m,available,pending){
   var el=document.getElementById('bolso-insights');
