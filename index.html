@@ -186,6 +186,41 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .chip-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .anim{animation:fadeUp .28s ease both;}
+
+/* BOLSO NOVA: immersive, responsive financial cockpit */
+:root{--bg:#080e17;--surface:#101b2a;--surface2:#19283a;--surface3:#25374b;--border:rgba(161,214,235,.11);--border2:rgba(161,214,235,.24);--text:#f4fafb;--text2:#c9e1e7;--muted:#8ca4b2;--accent:#a9f46b;--accent2:#64dcae;--success:#61e8bb;--info:#7abaf7;--nav-bg:rgba(9,19,31,.82);--hero-bg:linear-gradient(132deg,#1e514c 0%,#173f49 46%,#152b49 100%);--hero-border:rgba(175,255,204,.24);--hero-glow:rgba(171,255,168,.2);--r:23px;--shadow-card:0 15px 40px rgba(0,0,0,.13)}
+@media(prefers-color-scheme:light){:root{--bg:#eef5f3;--surface:#fff;--surface2:#e6f2ef;--surface3:#d8e8e4;--border:rgba(22,73,64,.12);--border2:rgba(22,73,64,.2);--text:#16332f;--text2:#325b55;--muted:#688781;--accent:#1d9e73;--accent2:#15775d;--success:#0b946b;--nav-bg:rgba(244,251,247,.86);--hero-bg:linear-gradient(132deg,#c7f5d8,#d5f1e9 50%,#d7e9fa);--hero-border:rgba(16,137,101,.25);--hero-glow:rgba(23,154,107,.17);--shadow-card:0 16px 36px rgba(26,74,67,.08)}}
+html,body{background:var(--bg)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 35% at 12% 0%,rgba(62,199,158,.12),transparent),radial-gradient(ellipse 45% 35% at 90% 80%,rgba(71,116,241,.08),transparent);z-index:0}
+#app{max-width:680px;background:transparent}
+.topbar{padding-top:calc(var(--safe-top) + 9px);padding-bottom:16px;background:linear-gradient(to bottom,var(--bg) 80%,transparent)}
+.topbar-title{font-size:27px;letter-spacing:-1.2px}
+.topbar-title:after{content:" ●";color:var(--accent);font-size:16px;vertical-align:top}
+.screen-body{padding:4px 20px 140px}
+.screen.active .screen-body{animation:bolsoReveal .42s ease both}
+.hero{padding:28px 23px 25px;border-radius:30px;box-shadow:0 20px 60px rgba(9,40,45,.22);background-size:200% 200%;animation:heroBreathe 11s ease-in-out infinite alternate}
+.hero:after{content:"";position:absolute;right:-42px;top:-55px;width:200px;height:200px;border:1px solid rgba(255,255,255,.17);border-radius:50%;box-shadow:0 0 0 30px rgba(255,255,255,.035),0 0 0 62px rgba(255,255,255,.025);pointer-events:none}
+.hero-label{font-size:12px;letter-spacing:1.8px;color:var(--text2)}
+.hero-value{font-size:clamp(35px,8vw,52px);letter-spacing:-2px;margin:13px 0 24px}
+.hero-row{gap:8px}.hero-stat{padding:12px;border:1px solid var(--border);backdrop-filter:blur(12px);border-radius:15px}
+.card{border-radius:23px;padding:20px;box-shadow:var(--shadow-card)}
+.bottom-nav{max-width:680px;bottom:12px;border:1px solid var(--border2);border-radius:24px;width:calc(100% - 24px);padding:10px 8px calc(var(--safe-bottom) + 4px);box-shadow:0 16px 42px rgba(0,0,0,.24)}
+.nav-btn{border-radius:15px;padding:9px 7px;min-width:0;flex:1}.nav-btn.active{background:var(--surface2);color:var(--accent);transform:translateY(-2px)}
+.nav-btn.active svg{filter:drop-shadow(0 0 8px rgba(120,230,162,.4))}
+.fab{right:max(18px,calc((100vw - 680px)/2 + 20px));bottom:calc(var(--safe-bottom) + 92px);border-radius:20px;width:58px;height:58px;box-shadow:0 12px 30px rgba(67,177,123,.28)}
+.btn-primary,.fab{color:#09221c}
+.month-badge,.icon-btn{background:var(--surface);border-color:var(--border2)}
+.tx,.inc-item,.exp-item{transition:transform .2s,background .2s}.tx:active,.inc-item:active,.exp-item:active{transform:scale(.99)}
+.sec{font-size:12px;letter-spacing:1.1px;margin-top:26px}
+.bolso-wa-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.bolso-wa-actions button{border:1px solid var(--border2);background:var(--surface2);color:var(--text);border-radius:14px;padding:13px 10px;font-size:12px;font-weight:700;cursor:pointer;text-align:center}
+.bolso-wa-actions button:active{transform:scale(.97)}
+.bolso-wa-note{font-size:11px;line-height:1.55;color:var(--muted);margin-top:10px}
+@keyframes heroBreathe{from{background-position:0% 40%}to{background-position:100% 70%}}
+@keyframes bolsoReveal{from{opacity:.5;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.hero,.screen.active .screen-body{animation:none!important}*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+@media(min-width:760px){#app{max-width:760px}.bottom-nav{max-width:760px}.screen-body{padding-left:32px;padding-right:32px}.hero{padding:36px}.fab{right:max(24px,calc((100vw - 760px)/2 + 30px))}}
+
 </style>
 </head>
 <body>
@@ -217,6 +252,16 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
       </div>
     </div>
     <div id="bolso-insights" class="card" style="padding:16px;margin:12px 0;"></div>
+    <div class="card" id="bolso-whatsapp">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;"><div><div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;">BOLSO CONECTADO</div><div style="font-size:18px;font-weight:800;margin-top:5px;">💬 Seu financeiro no WhatsApp</div></div><div style="font-size:30px;">↗</div></div>
+      <div class="bolso-wa-actions">
+        <button type="button" onclick="shareBolsoWhatsApp('summary')">📊 Resumo do mês</button>
+        <button type="button" onclick="shareBolsoWhatsApp('bills')">📋 Contas pendentes</button>
+        <button type="button" onclick="shareBolsoWhatsApp('reminder')">🔔 Lembrete de conta</button>
+        <button type="button" onclick="shareBolsoWhatsApp('link')">✨ Indicar Bolso</button>
+      </div>
+      <div class="bolso-wa-note">Você revisa a mensagem antes de enviar. Nada é enviado automaticamente. Evite compartilhar valores financeiros em grupos.</div>
+    </div>
     <div id="install-alert-wrap"></div>
     <div class="sec">Gastos por categoria</div>
     <div class="card"><div id="donut-chart"></div></div>
@@ -927,6 +972,35 @@ function renderDash(y,m){
   }).join('');
 }
 
+// WHATSAPP SERVICES: explicit user-initiated sharing, no server and no auto-send.
+function shareBolsoWhatsApp(mode){
+  var y=AD.y,m=AD.m,month=fmtM(y,m),incomes=getInc(y,m),expenses=getExp(y,m);
+  var inc=incomes.reduce(function(a,x){return a+Number(x.val||0);},0);
+  var paid=expenses.filter(function(x){return x.status==='paid';}).reduce(function(a,x){return a+Number(x.val||0);},0);
+  var pending=expenses.filter(function(x){return x.status!=='paid';});
+  var pendingSum=pending.reduce(function(a,x){return a+Number(x.val||0);},0);
+  var message='';
+  if(mode==='summary'){
+    message='📊 *Bolso — Resumo de '+month+'*\\n\\n💚 Entradas: '+fmtCur(inc)+'\\n✅ Contas pagas: '+fmtCur(paid)+'\\n⏳ Contas pendentes: '+fmtCur(pendingSum)+'\\n💰 Saldo disponível: '+fmtCur(inc-paid)+'\\n🔮 Após as contas: '+fmtCur(inc-paid-pendingSum);
+  }else if(mode==='bills'){
+    if(!pending.length){showToast('Não há contas pendentes neste mês');return;}
+    message='📋 *Contas pendentes — '+month+'*\\n\\n'+pending.slice().sort(function(a,b){return a.date.localeCompare(b.date);}).map(function(x){return '• '+x.desc+' ('+fmtDate(x.date)+'): '+fmtCur(x.val);}).join('\\n')+'\\n\\n*Total:* '+fmtCur(pendingSum);
+  }else if(mode==='reminder'){
+    if(!pending.length){showToast('Não há contas pendentes neste mês');return;}
+    var list=pending.slice().sort(function(a,b){return a.date.localeCompare(b.date);});
+    var choice=prompt('Qual conta deseja usar no lembrete? Digite o número:\\n'+list.map(function(x,i){return (i+1)+'. '+x.desc+' — '+fmtCur(x.val)+' ('+fmtDate(x.date)+')';}).join('\\n'),'1');
+    if(choice===null)return;
+    var index=Number(choice)-1;
+    if(!Number.isInteger(index)||index<0||index>=list.length){showToast('Selecione uma conta válida');return;}
+    var item=list[index];
+    message='🔔 *Lembrete de pagamento*\\n'+item.desc+'\\n💸 '+fmtCur(item.val)+'\\n📅 Vencimento: '+item.date.split('-').reverse().join('/')+'\\nStatus: Pendente';
+  }else if(mode==='link'){
+    message='✨ Estou organizando minhas finanças com o Bolso. Conheça: https://oliveiramaker.github.io/bolso/';
+  }else return;
+  var url='https://wa.me/?text='+encodeURIComponent(message);
+  var opened=window.open(url,'_blank','noopener,noreferrer');
+  if(!opened){window.location.href=url;}
+}
 // SMART INSIGHTS: safe daily spending, upcoming bills, and purchase simulator.
 var bolsoSimAmount=0;
 function setBolsoSimulation(value){
