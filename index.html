@@ -351,7 +351,7 @@ body:before{background:radial-gradient(ellipse 90% 46% at 5% -6%,rgba(156,127,24
       <button onclick="openAddIncome(null)"><span class="wallet-action-icon wallet-in">↙</span><span>Receber</span></button>
       <button onclick="openAddExpense(null)"><span class="wallet-action-icon wallet-out">↗</span><span>Pagar</span></button>
       <button onclick="goTo('expense')"><span class="wallet-action-icon wallet-list">▤</span><span>Extrato</span></button>
-      <button onclick="shareBolsoWhatsApp('summary')"><span class="wallet-action-icon wallet-share">↗</span><span>Enviar</span></button>
+      <button onclick="goTo('goals')"><span class="wallet-action-icon wallet-share">◎</span><span>Metas</span></button>
     </div>
     <div class="wallet-section-heading"><div><span class="wallet-kicker">VISÃO GERAL</span><h2>Seu mês em foco</h2></div><button onclick="goTo('reports')">Detalhes ↗</button></div>
     <div class="wallet-metrics">
@@ -367,11 +367,6 @@ body:before{background:radial-gradient(ellipse 90% 46% at 5% -6%,rgba(156,127,24
     <div class="wallet-chart"><div id="donut-chart"></div></div>
     <div class="wallet-chart"><div id="bar-chart"></div><div id="bar-labels" style="display:flex;gap:5px;margin-top:5px;padding:0 2px;"></div></div>
     <div id="install-alert-wrap"></div>
-    <div class="wallet-section-heading"><div><span class="wallet-kicker">CONECTADO</span><h2>Bolso + WhatsApp</h2></div></div>
-    <div class="wallet-chart" id="bolso-whatsapp"><div class="wallet-whatsapp-header">Compartilhe suas finanças quando quiser <span>↗</span></div>
-      <div class="bolso-wa-actions"><button onclick="shareBolsoWhatsApp('summary')">📊 Resumo</button><button onclick="shareBolsoWhatsApp('bills')">📋 Pendências</button><button onclick="shareBolsoWhatsApp('reminder')">🔔 Lembrete</button><button onclick="shareBolsoWhatsApp('link')">✨ Indicar</button></div>
-      <div class="bolso-wa-note">O WhatsApp abre com a mensagem pronta; você decide se envia.</div>
-    </div>
   </div>
 </div>
 
@@ -1075,35 +1070,6 @@ function renderDash(y,m){
   }).join('');
 }
 
-// WHATSAPP SERVICES: explicit user-initiated sharing, no server and no auto-send.
-function shareBolsoWhatsApp(mode){
-  var y=AD.y,m=AD.m,month=fmtM(y,m),incomes=getInc(y,m),expenses=getExp(y,m);
-  var inc=incomes.reduce(function(a,x){return a+Number(x.val||0);},0);
-  var paid=expenses.filter(function(x){return x.status==='paid';}).reduce(function(a,x){return a+Number(x.val||0);},0);
-  var pending=expenses.filter(function(x){return x.status!=='paid';});
-  var pendingSum=pending.reduce(function(a,x){return a+Number(x.val||0);},0);
-  var message='';
-  if(mode==='summary'){
-    message='📊 *Bolso — Resumo de '+month+'*\\n\\n💚 Entradas: '+fmtCur(inc)+'\\n✅ Contas pagas: '+fmtCur(paid)+'\\n⏳ Contas pendentes: '+fmtCur(pendingSum)+'\\n💰 Saldo disponível: '+fmtCur(inc-paid)+'\\n🔮 Após as contas: '+fmtCur(inc-paid-pendingSum);
-  }else if(mode==='bills'){
-    if(!pending.length){showToast('Não há contas pendentes neste mês');return;}
-    message='📋 *Contas pendentes — '+month+'*\\n\\n'+pending.slice().sort(function(a,b){return a.date.localeCompare(b.date);}).map(function(x){return '• '+x.desc+' ('+fmtDate(x.date)+'): '+fmtCur(x.val);}).join('\\n')+'\\n\\n*Total:* '+fmtCur(pendingSum);
-  }else if(mode==='reminder'){
-    if(!pending.length){showToast('Não há contas pendentes neste mês');return;}
-    var list=pending.slice().sort(function(a,b){return a.date.localeCompare(b.date);});
-    var choice=prompt('Qual conta deseja usar no lembrete? Digite o número:\\n'+list.map(function(x,i){return (i+1)+'. '+x.desc+' — '+fmtCur(x.val)+' ('+fmtDate(x.date)+')';}).join('\\n'),'1');
-    if(choice===null)return;
-    var index=Number(choice)-1;
-    if(!Number.isInteger(index)||index<0||index>=list.length){showToast('Selecione uma conta válida');return;}
-    var item=list[index];
-    message='🔔 *Lembrete de pagamento*\\n'+item.desc+'\\n💸 '+fmtCur(item.val)+'\\n📅 Vencimento: '+item.date.split('-').reverse().join('/')+'\\nStatus: Pendente';
-  }else if(mode==='link'){
-    message='✨ Estou organizando minhas finanças com o Bolso. Conheça: https://oliveiramaker.github.io/bolso/';
-  }else return;
-  var url='https://wa.me/?text='+encodeURIComponent(message);
-  var opened=window.open(url,'_blank','noopener,noreferrer');
-  if(!opened){window.location.href=url;}
-}
 // SMART INSIGHTS: safe daily spending, upcoming bills, and purchase simulator.
 var bolsoSimAmount=0;
 function setBolsoSimulation(value){
